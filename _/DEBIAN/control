@@ -1,0 +1,11 @@
+Package: com.128keaton.gmorning
+Name: G'mornin
+Depends: mobilesubstrate, preferenceloader
+Architecture: iphoneos-arm
+Description: A neat greeting!
+Maintainer: Keaton Burleson
+Author: Keaton Burleson
+Section: Tweaks
+Depiction: http://128keaton.com/cydia/depictions?dep=com.128keaton.gmorning
+Version: 0.0.1-32-14
+Installed-Size: 280

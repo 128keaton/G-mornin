@@ -26,8 +26,8 @@ unsigned long long *theFinalCountdown = nil;
 }
 
 %end
-%hook SBLockScreenDateViewController
--(void)_updateView{
+%hook SBLockScreenView
+-(void)glintyAnimationDidStart{
     %orig;
    
     
@@ -36,7 +36,7 @@ unsigned long long *theFinalCountdown = nil;
     }else{
         alpineIsTheDefaultPassword = @"Mr X.";
     }
-    
+
     NSLog(@"staying alive");
     UILabel *greetingLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,lockScreenView.frame.size.width /2,150)];
     [greetingLabel setCenter: lockScreenView.center];
@@ -91,7 +91,7 @@ unsigned long long *theFinalCountdown = nil;
         [lockScreenView insertSubview:greetingLabel atIndex: 0];
     }
     [UIView animateWithDuration:1.0
-                              delay:0.0
+                              delay:.5
                             options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
                              greetingLabel.alpha = 1.0;
@@ -99,7 +99,7 @@ unsigned long long *theFinalCountdown = nil;
                      completion:^(BOOL finished) {
                         
                      }];
-    [NSTimer scheduledTimerWithTimeInterval:2.0
+    [NSTimer scheduledTimerWithTimeInterval:4.0
                                      target:self
                                    selector:@selector(removeLabel:)
                                    userInfo:nil
@@ -127,7 +127,11 @@ unsigned long long *theFinalCountdown = nil;
 
 
 %end
-
+%hook SBLockScreenViewController
+-(BOOL)shouldShowSlideToUnlockTextImmediately{
+return YES;
+}
+%end
 %end
 
 %group iOS6
@@ -219,8 +223,8 @@ SBAwayDateView *awayScreenView = nil;
                      }];
     [NSTimer scheduledTimerWithTimeInterval:2.0
                                      target:self
-                                   selector:@selector(removeLabel:)
-                                   userInfo:nil
+selector:@selector(removeLabel:)
+userInfo:nil
                                     repeats:NO];
     
 }
