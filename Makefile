@@ -3,6 +3,8 @@ TARGET = iphone:clang:latest:latest
 THEOS_BUILD_DIR = releases
 include theos/makefiles/common.mk
 
+GO_EASY_ON_ME = 1
+
 TWEAK_NAME = Gmornin
 Gmornin_FILES = Tweak.xm
 Gmornin_FRAMEWORKS = UIKit
@@ -14,3 +16,5 @@ include $(THEOS_MAKE_PATH)/tweak.mk
 
 after-install::
 	install.exec "killall -9 SpringBoard"
+SUBPROJECTS += gmornin
+include $(THEOS_MAKE_PATH)/aggregate.mk

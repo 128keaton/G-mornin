@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = gmornin;
+		cell = PSLinkCell;
+		detail = "gmorninListController";
+		icon = "gmornin.png";
+		isController = 1;
+		label = "G'mornin";
+	};
+}

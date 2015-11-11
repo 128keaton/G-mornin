@@ -1,10 +1,10 @@
 Package: com.128keaton.gmorning
 Name: G'mornin
-Depends: mobilesubstrate
-Version: 0.0.1-31
+Depends: mobilesubstrate, preferenceloader
+Version: 0.0.1-32
 Architecture: iphoneos-arm
-Description: Bananana phone!
+Description: A neat greeting!
 Maintainer: Keaton Burleson
 Author: Keaton Burleson
 Section: Tweaks
-Depiction: http://128keaton.com/cydia/depictions?com.128keaton.gmorning
+Depiction: http://128keaton.com/cydia/depictions?dep=com.128keaton.gmorning

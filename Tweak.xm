@@ -1,6 +1,8 @@
 #import <UIKit/UIKit.h>
+NSMutableDictionary *prefs = [[NSMutableDictionary alloc] initWithContentsOfFile:@"/var/mobile/Library/Preferences/com.128keaton.gmorning.plist"];
 
 #define kScreenTag 73737334
+NSString *alpineIsTheDefaultPassword = nil;
 %group iOS7
 @interface SBLockScreenView : UIView
 @end
@@ -8,6 +10,9 @@
 
 
 SBLockScreenView *lockScreenView = nil;
+
+
+unsigned long long *theFinalCountdown = nil;
 
 
 %hook SBLockScreenView
@@ -24,6 +29,14 @@ SBLockScreenView *lockScreenView = nil;
 %hook SBLockScreenDateViewController
 -(void)_updateView{
     %orig;
+   
+    
+    if([prefs objectForKey:@"username"]!= nil){
+        alpineIsTheDefaultPassword = [prefs objectForKey:@"username"];
+    }else{
+        alpineIsTheDefaultPassword = @"Mr X.";
+    }
+    
     NSLog(@"staying alive");
     UILabel *greetingLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,lockScreenView.frame.size.width /2,150)];
     [greetingLabel setCenter: lockScreenView.center];
@@ -35,23 +48,45 @@ SBLockScreenView *lockScreenView = nil;
     greetingLabel.alpha = 0.0;
     greetingLabel.tag = kScreenTag;
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *dateComponents = [gregorian components:NSCalendarUnitHour fromDate:[NSDate date]];
+        NSDate *date = [NSDate date];
+        
+        // Make Date Formatter
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"hh a"];
+        
+        // hh for hour mm for minutes and a will show you AM or PM
+        NSString *str = [dateFormatter stringFromDate:date];
+        NSLog(@"%@", str);
+        
+        // Sperate str by space i.e. you will get time and AM/PM at index 0 and 1 respectively
+        NSArray *array = [str componentsSeparatedByString:@" "];
+        
+        // Now you can check it by 12. If < 12 means Its morning > 12 means its evening or night
+        
+        NSString *message = nil;
+    NSString *personName = alpineIsTheDefaultPassword;
+        NSString *timeInHour = array[0];
+        NSString *am_pm      = array[1];
+        
+        if([timeInHour integerValue] < 12 && [am_pm isEqualToString:@"AM"])
+        {
+            greetingLabel.text = [NSString stringWithFormat:@"Good Morning %@", personName];
+        }
+        else if ([timeInHour integerValue] <= 4 && [am_pm isEqualToString:@"PM"])
+        {
+            greetingLabel.text = [NSString stringWithFormat:@"Good Afternoon %@", personName];
+        }
+        else if ([timeInHour integerValue] > 4 && [am_pm isEqualToString:@"PM"])
+        {
+            greetingLabel.text = [NSString stringWithFormat:@"Good Night %@", personName];
+        }
+        
+        
+        NSLog(@"%@", message);
+        
     
-    NSInteger hour = [dateComponents hour];
-    if (hour < 12)
-    {
-        greetingLabel.text = @"Good morning!";
-    }
-    else if (hour > 12 && hour <= 16)
-    {
-        greetingLabel.text = @"Good afternoon!";
-    }
-    else
-    {
-        greetingLabel.text = @"Good night!";
-    }
-     UILabel *dieLabel = (UILabel *)[lockScreenView viewWithTag:kScreenTag];
+        
+    UILabel *dieLabel = (UILabel *)[lockScreenView viewWithTag:kScreenTag];
     if(dieLabel == nil){
         [lockScreenView insertSubview:greetingLabel atIndex: 0];
     }
@@ -117,6 +152,11 @@ SBAwayDateView *awayScreenView = nil;
 -(void)updateInterface{
     %orig;
     NSLog(@"staying alive");
+    if([prefs objectForKey:@"username"] != nil){
+        alpineIsTheDefaultPassword = [prefs objectForKey:@"username"];
+    }else{
+        alpineIsTheDefaultPassword = @"Mr X.";
+    }
     UILabel *greetingLabel = [[UILabel alloc]initWithFrame:CGRectMake(0,0,awayScreenView.frame.size.width /2,150)];
     [greetingLabel setCenter: awayScreenView.center];
     greetingLabel.numberOfLines = 0;
@@ -128,22 +168,42 @@ SBAwayDateView *awayScreenView = nil;
     greetingLabel.alpha = 0.0;
     greetingLabel.tag = kScreenTag;
     
-    NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSCalendarIdentifierGregorian];
-    NSDateComponents *dateComponents = [gregorian components:NSCalendarUnitHour fromDate:[NSDate date]];
+    NSDate *date = [NSDate date];
     
-    NSInteger hour = [dateComponents hour];
-    if (hour < 12)
+    // Make Date Formatter
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"hh a"];
+    
+    // hh for hour mm for minutes and a will show you AM or PM
+    NSString *str = [dateFormatter stringFromDate:date];
+    NSLog(@"%@", str);
+    
+    // Sperate str by space i.e. you will get time and AM/PM at index 0 and 1 respectively
+    NSArray *array = [str componentsSeparatedByString:@" "];
+    
+    // Now you can check it by 12. If < 12 means Its morning > 12 means its evening or night
+    
+    NSString *message = nil;
+    NSString *personName =  alpineIsTheDefaultPassword;
+    NSString *timeInHour = array[0];
+    NSString *am_pm      = array[1];
+    
+    if([timeInHour integerValue] < 12 && [am_pm isEqualToString:@"AM"])
     {
-        greetingLabel.text = @"Good morning!";
+        greetingLabel.text = [NSString stringWithFormat:@"Good Morning %@", personName];
     }
-    else if (hour > 12 && hour <= 16)
+    else if ([timeInHour integerValue] <= 4 && [am_pm isEqualToString:@"PM"])
     {
-        greetingLabel.text = @"Good afternoon!";
+        greetingLabel.text = [NSString stringWithFormat:@"Good Afternoon %@", personName];
     }
-    else
+    else if ([timeInHour integerValue] > 4 && [am_pm isEqualToString:@"PM"])
     {
-        greetingLabel.text = @"Good night!";
+        greetingLabel.text = [NSString stringWithFormat:@"Good Night %@", personName];
     }
+    
+    
+    NSLog(@"%@", message);
+    
     UILabel *dieLabel = (UILabel *)[lockScreenView viewWithTag:kScreenTag];
     if(dieLabel == nil){
         [awayScreenView  addSubview:greetingLabel];
